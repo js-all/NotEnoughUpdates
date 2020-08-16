@@ -13,6 +13,9 @@ public class CustomItems {
      * shortcut and gained nothing. You experienced a hollow victory. Nothing was risked and nothing was gained.
      * It's sad that you don't know the difference.
      */
+    /**
+     * im sorry i don't really understand but those are nice easter eggs :D.
+     */
 
     public static JsonObject NULLZEE = create(
             "NULLZEE",
@@ -63,7 +66,7 @@ public class CustomItems {
                   "get flexed");
 
     /**
-     * SHAAAAAAAAAAAAAAAAAAME
+     * S(H)AAAAAAAAAAAAAAAAAAME
      */
 
     private static JsonObject create(String internalname, String itemid, String displayname, String... lore) {

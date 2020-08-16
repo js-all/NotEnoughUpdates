@@ -37,6 +37,8 @@ import net.minecraft.util.Matrix4f;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 import net.minecraftforge.client.ClientCommandHandler;
+import sun.font.GlyphList;
+
 import org.apache.commons.lang3.StringUtils;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.input.Mouse;
@@ -87,8 +89,8 @@ public class NEUOverlay extends Gui {
     public static final int ITEM_PADDING = 4;
     public static final int ITEM_SIZE = 16;
 
-    private Color bg = new Color(90, 90, 140, 50);
-    private Color fg = new Color(100,100,100, 255);
+    private Color bg = new Color(0, 0, 0, 50);
+    private Color fg = new Color(0,0,0, 50);
 
     private InfoPane activeInfoPane = null;
 
@@ -273,15 +275,17 @@ public class NEUOverlay extends Gui {
                 int paddingUnscaled = getPaddingUnscaled();
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(settings);
+                // remove background and white border of settings button
+                /*
                 drawRect((int)x, (int)y,
                         (int)x + getWidth(), (int)y + getHeight(),
                         Color.WHITE.getRGB());
-
+                
 
                 drawRect((int)x + paddingUnscaled, (int)y + paddingUnscaled,
                         (int)x + getWidth() - paddingUnscaled, (int)y + getHeight() - paddingUnscaled,
                         Color.GRAY.getRGB());
-
+                */
                 GlStateManager.color(1f, 1f, 1f, 1f);
                 Utils.drawTexturedRect((int)x + paddingUnscaled, (int)y + paddingUnscaled,
                         getSearchBarYSize(), getSearchBarYSize());
@@ -325,6 +329,7 @@ public class NEUOverlay extends Gui {
                 int paddingUnscaled = getPaddingUnscaled();
 
                 Minecraft.getMinecraft().getTextureManager().bindTexture(help);
+                /*
                 drawRect((int)x, (int)y,
                         (int)x + getWidth(), (int)y + getHeight(),
                         Color.WHITE.getRGB());
@@ -332,7 +337,7 @@ public class NEUOverlay extends Gui {
                 drawRect((int)x + paddingUnscaled, (int)y + paddingUnscaled,
                         (int)x + getWidth() - paddingUnscaled, (int)y + getHeight() - paddingUnscaled,
                         Color.GRAY.getRGB());
-
+                */ 
                 GlStateManager.color(1f, 1f, 1f, 1f);
                 Utils.drawTexturedRect((int)x + paddingUnscaled, (int)y + paddingUnscaled,
                         getSearchBarYSize(), getSearchBarYSize());
@@ -424,31 +429,40 @@ public class NEUOverlay extends Gui {
                     }
                 }
                 if(render != null) {
-                    Minecraft.getMinecraft().getTextureManager().bindTexture(item_mask);
-                    GlStateManager.color(1, 1, 1, 1);
-                    Utils.drawTexturedRect(x, y,
-                            bigItemSize + paddingUnscaled*2, bigItemSize + paddingUnscaled*2, GL11.GL_LINEAR);
-                    GlStateManager.color(fg.getRed() / 255f,fg.getGreen() / 255f,
-                            fg.getBlue() / 255f, fg.getAlpha() / 255f);
-                    Utils.drawTexturedRect(x+paddingUnscaled, y+paddingUnscaled, bigItemSize, bigItemSize, GL11.GL_LINEAR);
-
                     int mouseX = Mouse.getX() * scaledresolution.getScaledWidth() / Minecraft.getMinecraft().displayWidth;
                     int mouseY = scaledresolution.getScaledHeight() - Mouse.getY() * scaledresolution.getScaledHeight() / Minecraft.getMinecraft().displayHeight - 1;
+                    boolean mouseOver = (mouseX > x && mouseX < x+bigItemSize) && (mouseY > y && mouseY < y+bigItemSize);
+                    float scale = mouseOver ? .8f : 1f;
+                    float scale2 = mouseOver ? 1.2f : 1f;
+                    /*Minecraft.getMinecraft().getTextureManager().bindTexture(item_mask);
+                    GlStateManager.color(1, 1, 1, 1);
+                    
+                    Utils.drawTexturedRect(x*scale2, y*scale2,
+                            (bigItemSize + paddingUnscaled*2)*scale, (bigItemSize + paddingUnscaled*2)*scale, GL11.GL_LINEAR);
+                    GlStateManager.color(255 / 255f,fg.getGreen() / 255f,
+                            fg.getBlue() / 255f, fg.getAlpha() / 255f);
+                    Utils.drawTexturedRect(x+paddingUnscaled, y+paddingUnscaled, bigItemSize, bigItemSize, GL11.GL_LINEAR);*/
 
-                    if(mouseX > x && mouseX < x+bigItemSize) {
-                        if(mouseY > y && mouseY < y+bigItemSize) {
+                    
+                    
+                    if(mouseOver) {
                             textToDisplay = new ArrayList<>();
                             textToDisplay.add(EnumChatFormatting.GRAY+quickCommandStr.split(":")[1]);
-                        }
                     }
-
                     float itemScale = bigItemSize/(float)ITEM_SIZE*extraScale;
+                    float biggerItemScale = itemScale;
                     GlStateManager.pushMatrix();
+                    GlStateManager.scale(biggerItemScale, biggerItemScale, 1);
+                    GlStateManager.translate((x-(extraScale-1)*bigItemSize/2+paddingUnscaled) /biggerItemScale,
+                            (y-(extraScale-1)*bigItemSize/2+paddingUnscaled)/biggerItemScale + (mouseOver ? -2 : 0), 0f);
+                    Utils.drawItemStack(render, 0, 0);
+                    GlStateManager.popMatrix();
+                    /*GlStateManager.pushMatrix();
                     GlStateManager.scale(itemScale, itemScale, 1);
                     GlStateManager.translate((x-(extraScale-1)*bigItemSize/2+paddingUnscaled) /itemScale,
                             (y-(extraScale-1)*bigItemSize/2+paddingUnscaled)/itemScale, 0f);
                     Utils.drawItemStack(render, 0, 0);
-                    GlStateManager.popMatrix();
+                    GlStateManager.popMatrix();*/
                 }
             }
         };

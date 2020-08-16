@@ -98,6 +98,16 @@ task runClientFix {
 	}
 }
 
+task moveMod {
+    doLast {
+        String fileName = "${archivesBaseName}-${version}-${mixinClassifier}.jar"
+        String devMc = "C:/Users/titouan/AppData/Roaming/.devtest/mods"
+        ant.delete file: "${devMc}/${fileName}"
+        ant.move file: "${buildDir}/libs/${fileName}", tofile: "${devMc}/${fileName}"
+        
+    }
+}
+
 runClient {
 	standardInput = System.in
 }
